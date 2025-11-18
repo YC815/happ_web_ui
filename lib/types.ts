@@ -37,12 +37,27 @@ export interface RoomAvailability {
 
 // ============ Plan 相關型別 ============
 
+// 後端實際返回的資料結構
+export interface PlanApiResponse {
+  plan_id: string;
+  room_id: number;
+  line_user_id: string | null;
+  target_start_time: string; // ISO datetime
+  target_end_time: string; // ISO datetime
+  status: PlanStatus;
+  order_url: string | null;
+  created_at: string;
+  updated_at: string;
+  tasks: TaskApiResponse[];
+}
+
+// 前端使用的資料結構
 export interface Plan {
   id: string;
   room_id: string;
   room_name: string;
   venue: VenueType;
-  date: string;
+  start_day: string;
   start_time: string;
   end_time: string | null; // null = 單次訂房，有值 = 重複續訂
   status: PlanStatus;
@@ -54,7 +69,7 @@ export interface Plan {
 
 export interface CreatePlanRequest {
   room_id: string;
-  date: string;
+  start_day: string;
   start_time: string;
   end_time?: string | null;
   line_user_id?: string;
@@ -68,6 +83,17 @@ export interface UpdatePlanRequest {
 
 // ============ Task 相關型別 ============
 
+// 後端實際返回的資料結構
+export interface TaskApiResponse {
+  task_id: number;
+  execute_at: string;
+  action: "booking" | "renew";
+  status: "pending" | "in_progress" | "completed" | "failed" | "skipped";
+  executed_at: string | null;
+  error_message: string | null;
+}
+
+// 前端使用的資料結構
 export interface Task {
   id: string;
   plan_id: string;
@@ -94,6 +120,19 @@ export interface DashboardStats {
   pending: number;
 }
 
+// 後端 /dashboard/events 實際回傳的格式
+export interface TaskEventApiResponse {
+  task_id: number;
+  plan_id: string;
+  line_user_id: string | null;
+  action: "booking" | "renew";
+  status: "completed" | "failed" | "in_progress" | "pending" | "skipped";
+  execute_at: string;
+  executed_at: string | null;
+  error_message: string | null;
+}
+
+// 前端使用的事件格式（已處理）
 export interface RecentEvent {
   id: string;
   type: "success" | "failure" | "start";

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Home, ClipboardList } from "lucide-react";
+import { LayoutDashboard, Home, ClipboardList, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   {
@@ -35,6 +36,17 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-4">
+        {/* Quick Action */}
+        <div className="mb-4 pb-4 border-b">
+          <Button asChild className="w-full">
+            <Link href="/plans/new">
+              <Plus className="mr-2 h-4 w-4" />
+              新增計劃
+            </Link>
+          </Button>
+        </div>
+
+        {/* Nav Items */}
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (

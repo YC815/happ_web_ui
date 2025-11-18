@@ -3,7 +3,11 @@
  */
 
 export const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000",
+  baseUrl:
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    (process.env.NODE_ENV === "production"
+      ? "https://happ-api.zeabur.app"
+      : "/api"), // 使用 Next.js proxy
   timeout: 30000,
 } as const;
 
@@ -19,6 +23,7 @@ export const API_ENDPOINTS = {
     create: () => "/plans",
     get: (id: string) => `/plans/${id}`,
     update: (id: string) => `/plans/${id}`,
+    delete: (id: string) => `/plans/${id}`,
   },
 
   // Tasks
