@@ -1,14 +1,7 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { PlanForm } from "@/components/plan-form";
+import { Suspense } from "react";
+import { NewPlanContent } from "./new-plan-content";
 
 export default function NewPlanPage() {
-  const searchParams = useSearchParams();
-  const roomId = searchParams.get("room_id");
-  const roomName = searchParams.get("room_name");
-  const venue = searchParams.get("venue");
-
   return (
     <div className="p-8">
       <div className="mb-6">
@@ -16,13 +9,9 @@ export default function NewPlanPage() {
         <p className="mt-2 text-neutral-600">填寫表單以建立新的訂房計劃</p>
       </div>
 
-      <PlanForm
-        defaultValues={{
-          roomId: roomId || undefined,
-          roomName: roomName || undefined,
-          venue: (venue as "minquan" | "taipower") || undefined,
-        }}
-      />
+      <Suspense fallback={<div>載入中...</div>}>
+        <NewPlanContent />
+      </Suspense>
     </div>
   );
 }
