@@ -92,7 +92,7 @@ export function PlanDetailSidebar({
 
   return (
     <Sheet open={!!planId} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[400px] sm:w-[540px] overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:w-[400px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle>計劃詳情</SheetTitle>
         </SheetHeader>
@@ -224,7 +224,7 @@ export function PlanDetailSidebar({
             </section>
 
             {/* 操作按鈕 */}
-            <div className="flex gap-2 pt-4 border-t">
+            <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t">
               <Button onClick={() => onEdit(plan)} className="flex-1">
                 編輯
               </Button>

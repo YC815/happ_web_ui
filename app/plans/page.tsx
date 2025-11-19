@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { PlanTable } from "@/components/plans/plan-table";
 import { PlanDetailSidebar } from "@/components/plans/plan-detail-sidebar";
@@ -47,16 +48,16 @@ export default function PlansPage() {
   const plans: Plan[] = data || [];
 
   return (
-    <div className="container mx-auto p-8">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="container mx-auto p-4 md:p-8">
+      <div className="mb-6 md:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">計劃管理</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold">計劃管理</h1>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">
             檢視和管理所有訂房計劃
           </p>
         </div>
         <Link href="/plans/new">
-          <Button>建立新計劃</Button>
+          <Button className="w-full sm:w-auto">建立新計劃</Button>
         </Link>
       </div>
 
@@ -64,13 +65,16 @@ export default function PlansPage() {
         value={selectedTab}
         onValueChange={(v) => setSelectedTab(v as PlanStatus)}
       >
-        <TabsList>
-          {STATUSES.map((status) => (
-            <TabsTrigger key={status} value={status}>
-              {STATUS_LABELS[status]}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <ScrollArea className="w-full">
+          <TabsList className="w-full justify-start">
+            {STATUSES.map((status) => (
+              <TabsTrigger key={status} value={status}>
+                {STATUS_LABELS[status]}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
 
         <TabsContent value={selectedTab} className="mt-6">
           <PlanTable

@@ -28,7 +28,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full w-64 flex-col border-r bg-neutral-50">
+    <div className="hidden md:flex h-full w-64 flex-col border-r bg-neutral-50">
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
         <h1 className="text-xl font-bold">Happ System</h1>
