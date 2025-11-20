@@ -60,6 +60,8 @@ export interface Plan {
   start_day: string;
   start_time: string;
   end_time: string | null; // null = 單次訂房，有值 = 重複續訂
+  booking_date?: string; // 訂購日期 (從 tasks[0].execute_at 提取)
+  booking_time?: string; // 訂購時間 (從 tasks[0].execute_at 提取)
   status: PlanStatus;
   line_user_id?: string;
   ignore_announcement: boolean;

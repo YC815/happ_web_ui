@@ -31,7 +31,7 @@ export function RoomTable({ venue }: RoomTableProps) {
   // 扁平化所有房間
   const rooms = venueData?.hubs.flatMap((hub) =>
     hub.hubRooms.map((room) => ({
-      id: room.id,
+      id: room.space_id,
       name: room.roomNumber,
       capacity: room.capacity,
       priority: room.priority,

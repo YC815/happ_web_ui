@@ -69,9 +69,11 @@ export function PlanTable({
             <TableRow>
               <TableHead>房間</TableHead>
               <TableHead>場館</TableHead>
-              <TableHead>日期</TableHead>
-              <TableHead>開始時間</TableHead>
-              <TableHead>結束時間</TableHead>
+              <TableHead>訂購日期</TableHead>
+              <TableHead>訂購時間</TableHead>
+              <TableHead>使用日期</TableHead>
+              <TableHead>使用開始</TableHead>
+              <TableHead>使用結束</TableHead>
               <TableHead>狀態</TableHead>
               <TableHead className="text-right">操作</TableHead>
             </TableRow>
@@ -85,6 +87,8 @@ export function PlanTable({
               >
                 <TableCell className="font-medium">{plan.room_name}</TableCell>
                 <TableCell>{VENUE_LABELS[plan.venue]}</TableCell>
+                <TableCell>{plan.booking_date || "-"}</TableCell>
+                <TableCell>{plan.booking_time || "-"}</TableCell>
                 <TableCell>{plan.start_day}</TableCell>
                 <TableCell>{plan.start_time}</TableCell>
                 <TableCell>{plan.end_time || "-"}</TableCell>
@@ -144,11 +148,19 @@ export function PlanTable({
 
               <div className="space-y-1.5 text-sm mb-3">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">日期</span>
+                  <span className="text-muted-foreground">訂購時間</span>
+                  <span className="font-medium">
+                    {plan.booking_date && plan.booking_time
+                      ? `${plan.booking_date} ${plan.booking_time}`
+                      : "-"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">使用日期</span>
                   <span className="font-medium">{plan.start_day}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">時間</span>
+                  <span className="text-muted-foreground">使用時間</span>
                   <span className="font-medium">
                     {plan.start_time} {plan.end_time && `~ ${plan.end_time}`}
                   </span>

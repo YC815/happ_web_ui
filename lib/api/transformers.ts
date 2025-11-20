@@ -95,6 +95,16 @@ export function transformPlan(apiPlan: PlanApiResponse): Plan {
 
   const roomInfo = getRoomInfo(apiPlan.room_id);
 
+  // 提取訂購時間 (從第一個 task 的 execute_at)
+  let bookingDate: string | undefined;
+  let bookingTime: string | undefined;
+  if (apiPlan.tasks && apiPlan.tasks.length > 0) {
+    const firstTask = apiPlan.tasks[0];
+    const { date, time } = parseDateTime(firstTask.execute_at);
+    bookingDate = date;
+    bookingTime = time;
+  }
+
   return {
     id: apiPlan.plan_id,
     room_id: apiPlan.room_id.toString(),
@@ -103,6 +113,8 @@ export function transformPlan(apiPlan: PlanApiResponse): Plan {
     start_day: startDate,
     start_time: startTime,
     end_time: endTime,
+    booking_date: bookingDate,
+    booking_time: bookingTime,
     status: apiPlan.status,
     line_user_id: apiPlan.line_user_id || undefined,
     ignore_announcement: false, // 後端沒返回，預設 false
