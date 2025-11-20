@@ -89,9 +89,9 @@ export function transformTask(apiTask: TaskApiResponse): Task {
  */
 export function transformPlan(apiPlan: PlanApiResponse): Plan {
   const { date: startDate, time: startTime } = parseDateTime(
-    apiPlan.target_start_time
+    apiPlan.usage_start_time
   );
-  const { time: endTime } = parseDateTime(apiPlan.target_end_time);
+  const { time: endTime } = parseDateTime(apiPlan.usage_end_time);
 
   const roomInfo = getRoomInfo(apiPlan.room_id);
 

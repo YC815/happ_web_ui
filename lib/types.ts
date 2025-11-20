@@ -42,8 +42,8 @@ export interface PlanApiResponse {
   plan_id: string;
   room_id: number;
   line_user_id: string | null;
-  target_start_time: string; // ISO datetime
-  target_end_time: string; // ISO datetime
+  usage_start_time: string; // ISO datetime - 實際使用開始時間
+  usage_end_time: string; // ISO datetime - 實際使用結束時間
   status: PlanStatus;
   order_url: string | null;
   created_at: string;
