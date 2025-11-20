@@ -131,6 +131,13 @@ export function PlanForm({ defaultValues }: PlanFormProps) {
 
       const response = await api.post(API_ENDPOINTS.plans.create(), payload);
 
+      // Fire-and-forget webhook trigger
+      fetch("https://happn8n.zeabur.app/webhook/run-execute", {
+        method: "POST",
+      }).catch(() => {
+        // Silently fail - webhook failure should not block user flow
+      });
+
       if (response && typeof response === "object" && "id" in response) {
         router.push(`/plans/${response.id}`);
       } else {
