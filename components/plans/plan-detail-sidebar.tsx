@@ -107,10 +107,10 @@ export function PlanDetailSidebar({
           <div className="space-y-6 mt-6">
             {/* 基本資訊 */}
             <section>
-              <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase">
+              <h3 className="font-semibold mb-4 text-base text-muted-foreground uppercase">
                 基本資訊
               </h3>
-              <dl className="space-y-3 text-sm">
+              <dl className="space-y-4 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">房間</dt>
                   <dd className="font-medium">{plan.room_name}</dd>
@@ -120,15 +120,23 @@ export function PlanDetailSidebar({
                   <dd>{VENUE_LABELS[plan.venue]}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">日期</dt>
+                  <dt className="text-muted-foreground">訂購時間</dt>
+                  <dd>
+                    {plan.booking_date && plan.booking_time
+                      ? `${plan.booking_date} ${plan.booking_time}`
+                      : "尚未排程"}
+                  </dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">使用日期</dt>
                   <dd>{plan.start_day}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">開始時間</dt>
+                  <dt className="text-muted-foreground">使用開始</dt>
                   <dd>{plan.start_time}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">結束時間</dt>
+                  <dt className="text-muted-foreground">使用結束</dt>
                   <dd>{plan.end_time || "單次訂房"}</dd>
                 </div>
                 <div className="flex justify-between">
@@ -154,30 +162,43 @@ export function PlanDetailSidebar({
 
             {/* 任務列表 */}
             <section>
-              <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase">
+              <h3 className="font-semibold mb-4 text-base text-muted-foreground uppercase">
                 相關任務 ({plan.tasks?.length || 0})
               </h3>
               {plan.tasks && plan.tasks.length > 0 ? (
-                <div className="space-y-2">
-                  {plan.tasks.map((task) => (
+                <div className="space-y-3">
+                  {[...plan.tasks]
+                    .sort(
+                      (a, b) =>
+                        new Date(a.scheduled_time).getTime() -
+                        new Date(b.scheduled_time).getTime()
+                    )
+                    .map((task) => (
                     <div
                       key={task.id}
-                      className="p-3 border rounded-lg space-y-2"
+                      className="p-4 border rounded-lg space-y-3"
                     >
                       <div className="flex justify-between items-start">
-                        <div>
+                        <div className="flex-1">
                           <div className="font-medium text-sm">
+                            預計{" "}
+                            {new Date(task.scheduled_time).toLocaleTimeString(
+                              "zh-TW",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: false,
+                              }
+                            )}{" "}
                             {TASK_TYPE_LABELS[task.type]}
                           </div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            {new Date(task.scheduled_time).toLocaleString(
+                            {new Date(task.scheduled_time).toLocaleDateString(
                               "zh-TW",
                               {
                                 year: "numeric",
                                 month: "2-digit",
                                 day: "2-digit",
-                                hour: "2-digit",
-                                minute: "2-digit",
                               }
                             )}
                           </div>
@@ -202,7 +223,7 @@ export function PlanDetailSidebar({
                         </div>
                       )}
                     </div>
-                  ))}
+                    ))}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground py-4 text-center border rounded-lg">
