@@ -132,7 +132,7 @@ export function PlanForm({ defaultValues }: PlanFormProps) {
       const response = await api.post(API_ENDPOINTS.plans.create(), payload);
 
       // Fire-and-forget webhook trigger
-      fetch("https://happn8n.zeabur.app/webhook/run-execute", {
+      fetch("https://happ-n8n.zeabur.app/webhook/run-execute", {
         method: "POST",
       }).catch(() => {
         // Silently fail - webhook failure should not block user flow
@@ -256,9 +256,7 @@ export function PlanForm({ defaultValues }: PlanFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormDescription>
-                  重複續訂至該時間
-                </FormDescription>
+                <FormDescription>重複續訂至該時間</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
