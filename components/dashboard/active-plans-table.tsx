@@ -88,7 +88,7 @@ export function ActivePlansTable() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>房間</TableHead>
+                      <TableHead>房間 ID</TableHead>
                       <TableHead>時段</TableHead>
                       <TableHead>狀態</TableHead>
                       <TableHead className="text-right">操作</TableHead>
@@ -99,7 +99,7 @@ export function ActivePlansTable() {
                       <TableRow key={plan.id}>
                         <TableCell className="font-medium">
                           <div>
-                            <p>{plan.room_name}</p>
+                            <p>{plan.room_id}</p>
                             <p className="text-xs text-muted-foreground">
                               {plan.venue === "minquan" ? "民權" : "台電"}
                             </p>

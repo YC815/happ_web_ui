@@ -126,6 +126,7 @@ export interface DashboardStats {
 export interface TaskEventApiResponse {
   task_id: number;
   plan_id: string;
+  room_id: number;
   line_user_id: string | null;
   action: "booking" | "renew";
   status: "completed" | "failed" | "in_progress" | "pending" | "skipped";
@@ -142,6 +143,7 @@ export interface RecentEvent {
   time: string;
   plan_id?: string;
   task_id?: string;
+  room_id: number;
 }
 
 // ============ API 回應包裝型別 ============

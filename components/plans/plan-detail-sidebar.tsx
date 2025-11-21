@@ -112,8 +112,8 @@ export function PlanDetailSidebar({
               </h3>
               <dl className="space-y-4 text-sm">
                 <div className="flex justify-between">
-                  <dt className="text-muted-foreground">房間</dt>
-                  <dd className="font-medium">{plan.room_name}</dd>
+                  <dt className="text-muted-foreground">房間 ID</dt>
+                  <dd className="font-medium">{plan.room_id}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">場館</dt>

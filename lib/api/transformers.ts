@@ -153,7 +153,6 @@ export function transformPlansResponse(response: {
  * 轉換 Task Event API 回應為前端事件格式
  */
 export function transformTaskEvent(apiEvent: TaskEventApiResponse): RecentEvent {
-  const roomInfo = getRoomInfo(Number(apiEvent.plan_id.split("-")[0]) || 0);
   const actionText = apiEvent.action === "booking" ? "訂房" : "續訂";
 
   // 決定事件類型和訊息
@@ -162,20 +161,20 @@ export function transformTaskEvent(apiEvent: TaskEventApiResponse): RecentEvent 
 
   if (apiEvent.status === "completed") {
     type = "success";
-    message = `${roomInfo.name} ${actionText}成功`;
+    message = `房間 ${apiEvent.room_id} ${actionText}成功`;
   } else if (apiEvent.status === "failed") {
     type = "failure";
-    message = `${roomInfo.name} ${actionText}失敗`;
+    message = `房間 ${apiEvent.room_id} ${actionText}失敗`;
     if (apiEvent.error_message) {
       message += ` → ${apiEvent.error_message}`;
     }
   } else if (apiEvent.status === "in_progress") {
     type = "start";
-    message = `${roomInfo.name} ${actionText}中...`;
+    message = `房間 ${apiEvent.room_id} ${actionText}中...`;
   } else {
     // pending / skipped
     type = "start";
-    message = `${roomInfo.name} ${actionText}待執行`;
+    message = `房間 ${apiEvent.room_id} ${actionText}待執行`;
   }
 
   return {
@@ -185,6 +184,7 @@ export function transformTaskEvent(apiEvent: TaskEventApiResponse): RecentEvent 
     time: apiEvent.executed_at || apiEvent.execute_at,
     plan_id: apiEvent.plan_id,
     task_id: apiEvent.task_id.toString(),
+    room_id: apiEvent.room_id,
   };
 }
 

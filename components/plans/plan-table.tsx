@@ -67,7 +67,7 @@ export function PlanTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>房間</TableHead>
+              <TableHead>房間 ID</TableHead>
               <TableHead>場館</TableHead>
               <TableHead>訂購日期</TableHead>
               <TableHead>訂購時間</TableHead>
@@ -85,7 +85,7 @@ export function PlanTable({
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => onPreview(plan.id)}
               >
-                <TableCell className="font-medium">{plan.room_name}</TableCell>
+                <TableCell className="font-medium">{plan.room_id}</TableCell>
                 <TableCell>{VENUE_LABELS[plan.venue]}</TableCell>
                 <TableCell>{plan.booking_date || "-"}</TableCell>
                 <TableCell>{plan.booking_time || "-"}</TableCell>
@@ -136,7 +136,7 @@ export function PlanTable({
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-medium text-base">{plan.room_name}</h3>
+                  <h3 className="font-medium text-base">{plan.room_id}</h3>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     {VENUE_LABELS[plan.venue]}
                   </p>
