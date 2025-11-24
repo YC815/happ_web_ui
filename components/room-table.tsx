@@ -28,22 +28,41 @@ export function RoomTable({ venue }: RoomTableProps) {
   // 找到對應的 venue
   const venueData = roomsData.find((v) => v.name === VENUE_NAME_MAP[venue]);
 
-  // 扁平化所有房間
-  const rooms = venueData?.hubs.flatMap((hub) =>
-    hub.hubRooms.map((room) => ({
-      id: room.space_id,
-      name: room.roomNumber,
-      capacity: room.capacity,
-      priority: room.priority,
-      address: hub.address,
-      hubName: hub.name2,
-    }))
-  ) ?? [];
+  // 扁平化所有房間，使用 space_id 作為唯一鍵去重
+  const roomsMap = new Map<string, {
+    id: string;
+    name: string;
+    capacity: string;
+    priority: string;
+    address: string;
+    hubName: string;
+    url: string;
+  }>();
 
-  const handleCreatePlan = (room: { id: string; name: string }) => {
+  venueData?.hubs.forEach((hub) => {
+    hub.hubRooms.forEach((room) => {
+      // 使用 space_id 避免重複
+      if (!roomsMap.has(room.space_id)) {
+        roomsMap.set(room.space_id, {
+          id: room.space_id,
+          name: room.roomNumber,
+          capacity: room.capacity,
+          priority: room.priority,
+          address: hub.address,
+          hubName: hub.name2,
+          url: room.url,
+        });
+      }
+    });
+  });
+
+  const rooms = Array.from(roomsMap.values());
+
+  const handleCreatePlan = (room: { id: string; name: string; hubName: string }) => {
     const params = new URLSearchParams({
       room_id: room.id,
       room_name: room.name,
+      hub_name: room.hubName,
       venue,
     });
     router.push(`/plans/new?${params.toString()}`);
@@ -67,6 +86,7 @@ export function RoomTable({ venue }: RoomTableProps) {
             <TableHead>場館</TableHead>
             <TableHead>地址</TableHead>
             <TableHead className="text-center">優先級</TableHead>
+            <TableHead className="text-center">連結</TableHead>
             <TableHead className="text-right">操作</TableHead>
           </TableRow>
         </TableHeader>
@@ -75,13 +95,24 @@ export function RoomTable({ venue }: RoomTableProps) {
             <TableRow key={room.id}>
               <TableCell className="font-medium">{room.name}</TableCell>
               <TableCell>{room.capacity} 人</TableCell>
-              <TableCell>{venue === "minquan" ? "香杉 民權店" : "香杉 台電店"}</TableCell>
+              <TableCell>{room.hubName}</TableCell>
               <TableCell className="max-w-xs truncate">{room.address}</TableCell>
               <TableCell className="text-center">{room.priority}</TableCell>
+              <TableCell className="text-center">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                >
+                  <a href={room.url} target="_blank" rel="noopener noreferrer">
+                    查看
+                  </a>
+                </Button>
+              </TableCell>
               <TableCell className="text-right">
                 <Button
                   size="sm"
-                  onClick={() => handleCreatePlan({ id: room.id, name: room.name })}
+                  onClick={() => handleCreatePlan({ id: room.id, name: room.name, hubName: room.hubName })}
                 >
                   建立計劃
                 </Button>

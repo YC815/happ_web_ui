@@ -42,6 +42,7 @@ interface PlanFormProps {
   defaultValues?: {
     roomId?: string;
     roomName?: string;
+    hubName?: string;
     venue?: VenueType;
   };
 }
@@ -184,7 +185,7 @@ export function PlanForm({ defaultValues }: PlanFormProps) {
                 </FormControl>
                 <FormDescription>
                   {defaultValues?.roomName &&
-                    `當前選擇：${defaultValues.roomName}`}
+                    `當前選擇：${defaultValues.hubName || ''} ${defaultValues.roomName}`}
                 </FormDescription>
                 <FormMessage />
               </FormItem>

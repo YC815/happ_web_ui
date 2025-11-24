@@ -7,6 +7,7 @@ export function NewPlanContent() {
   const searchParams = useSearchParams();
   const roomId = searchParams.get("room_id");
   const roomName = searchParams.get("room_name");
+  const hubName = searchParams.get("hub_name");
   const venue = searchParams.get("venue");
 
   return (
@@ -14,6 +15,7 @@ export function NewPlanContent() {
       defaultValues={{
         roomId: roomId || undefined,
         roomName: roomName || undefined,
+        hubName: hubName || undefined,
         venue: (venue as "minquan" | "taipower") || undefined,
       }}
     />
