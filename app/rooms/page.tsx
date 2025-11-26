@@ -1,43 +1,30 @@
-"use client";
+/**
+ * Rooms Page
+ * 顯示收藏空間列表（從爬蟲 API 抓取）
+ * 按照場館分類顯示
+ */
 
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RoomTable } from "@/components/room-table";
-import type { VenueType } from "@/lib/types";
+import { fetchFavorites, groupFavoritesByVenue } from '@/lib/api/favorites';
+import { FavoritesTabs } from './_components/FavoritesTabs';
+import { RefreshButton } from './_components/RefreshButton';
 
-const VENUES: { label: string; value: VenueType }[] = [
-  { label: "民權", value: "minquan" },
-  { label: "台電", value: "taipower" },
-];
-
-export default function RoomsPage() {
-  const [activeVenue, setActiveVenue] = useState<VenueType>("minquan");
+export default async function RoomsPage() {
+  const data = await fetchFavorites();
+  const groupedSpaces = groupFavoritesByVenue(data.spaces);
 
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">房間查詢</h1>
-        <p className="mt-2 text-neutral-600">查詢可用房間並建立訂房計劃</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">收藏空間</h1>
+          <p className="mt-2 text-neutral-600">
+            共 {data.count} 個收藏空間
+          </p>
+        </div>
+        <RefreshButton />
       </div>
 
-      <Tabs
-        value={activeVenue}
-        onValueChange={(value) => setActiveVenue(value as VenueType)}
-      >
-        <TabsList>
-          {VENUES.map((venue) => (
-            <TabsTrigger key={venue.value} value={venue.value}>
-              {venue.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {VENUES.map((venue) => (
-          <TabsContent key={venue.value} value={venue.value}>
-            <RoomTable venue={venue.value} />
-          </TabsContent>
-        ))}
-      </Tabs>
+      <FavoritesTabs groupedSpaces={groupedSpaces} />
     </div>
   );
 }
