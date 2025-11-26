@@ -8,6 +8,8 @@ import { fetchFavorites, groupFavoritesByVenue } from '@/lib/api/favorites';
 import { FavoritesTabs } from './_components/FavoritesTabs';
 import { RefreshButton } from './_components/RefreshButton';
 
+export const dynamic = 'force-dynamic';
+
 export default async function RoomsPage() {
   const data = await fetchFavorites();
   const groupedSpaces = groupFavoritesByVenue(data.spaces);

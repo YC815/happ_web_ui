@@ -54,8 +54,7 @@ export function getVenueFromTitle(title: string): VenueType {
  * 使用 Next.js 內建 cache，1 小時自動 revalidate
  */
 export async function fetchFavorites(): Promise<FavoritesResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-  const url = `${baseUrl}/favorites`;
+  const url = '/api/favorites';
 
   const res = await fetch(url, {
     next: {
