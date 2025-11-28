@@ -51,23 +51,14 @@ export function getVenueFromTitle(title: string): VenueType {
 
 /**
  * 抓取收藏空間列表
- * 使用 Next.js 內建 cache，1 小時自動 revalidate
+ * 直接從後端 API 取得資料
  */
 export async function fetchFavorites(): Promise<FavoritesResponse> {
-  const url = '/api/favorites';
+  // 動態 import API client 以確保只在伺服器端執行
+  const { api } = await import('./client');
+  const { API_ENDPOINTS } = await import('./config');
 
-  const res = await fetch(url, {
-    next: {
-      revalidate: 3600, // 1 小時快取
-      tags: ['favorites'], // 用於手動刷新
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to fetch favorites: ${res.status} ${res.statusText}`);
-  }
-
-  return res.json();
+  return api.get<FavoritesResponse>(API_ENDPOINTS.favorites.list());
 }
 
 /**

@@ -36,4 +36,9 @@ export const API_ENDPOINTS = {
     stats: () => "/dashboard/stats",
     events: () => "/dashboard/events",
   },
+
+  // Favorites
+  favorites: {
+    list: () => "/favorites",
+  },
 } as const;

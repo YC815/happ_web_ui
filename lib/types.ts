@@ -79,8 +79,8 @@ export interface CreatePlanRequest {
 }
 
 export interface UpdatePlanRequest {
+  start_time?: string;
   end_time?: string | null;
-  status?: PlanStatus;
 }
 
 // ============ Task 相關型別 ============

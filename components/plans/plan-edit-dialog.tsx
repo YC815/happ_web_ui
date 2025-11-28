@@ -31,7 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { api, ApiError } from "@/lib/api/client";
 import { API_ENDPOINTS } from "@/lib/api/config";
-import type { Plan, PlanStatus, UpdatePlanRequest } from "@/lib/types";
+import type { Plan, UpdatePlanRequest } from "@/lib/types";
 
 interface PlanEditDialogProps {
   plan: Plan | null;
@@ -91,25 +91,11 @@ const TIME_SLOTS = [
 ];
 
 const editFormSchema = z.object({
+  start_time: z.string().optional(),
   end_time: z.string().nullable(),
-  status: z.enum([
-    "pending",
-    "in_progress",
-    "completed",
-    "failed",
-    "cancelled",
-  ]),
 });
 
 type EditFormValues = z.infer<typeof editFormSchema>;
-
-const STATUS_LABELS: Record<PlanStatus, string> = {
-  pending: "待執行",
-  in_progress: "執行中",
-  completed: "已完成",
-  failed: "失敗",
-  cancelled: "已取消",
-};
 
 export function PlanEditDialog({
   plan,
@@ -122,17 +108,20 @@ export function PlanEditDialog({
   const form = useForm<EditFormValues>({
     resolver: zodResolver(editFormSchema),
     defaultValues: {
+      start_time: undefined,
       end_time: null,
-      status: "pending",
     },
   });
+
+  // 判斷計劃是否已開始
+  const isPlanStarted = plan?.status !== "pending";
 
   // 當 plan 變更時更新表單預設值
   useEffect(() => {
     if (plan) {
       form.reset({
+        start_time: plan.start_time,
         end_time: plan.end_time || null,
-        status: plan.status,
       });
     }
   }, [plan, form]);
@@ -144,10 +133,15 @@ export function PlanEditDialog({
     setError(null);
 
     try {
-      const payload: UpdatePlanRequest = {
-        end_time: values.end_time,
-        status: values.status,
-      };
+      const payload: UpdatePlanRequest = {};
+
+      // 只在計劃未開始時才能修改開始時間
+      if (!isPlanStarted && values.start_time) {
+        payload.start_time = values.start_time;
+      }
+
+      // 結束時間永遠可修改
+      payload.end_time = values.end_time;
 
       await api.patch(API_ENDPOINTS.plans.update(plan.id), payload);
       onSuccess();
@@ -175,7 +169,9 @@ export function PlanEditDialog({
         <DialogHeader>
           <DialogTitle>編輯計劃</DialogTitle>
           <DialogDescription>
-            修改計劃的結束時間或狀態。修改結束時間將重新生成續訂任務。
+            {isPlanStarted
+              ? "計劃已開始，僅可修改結束時間。修改將調整續訂任務。"
+              : "計劃尚未開始，可修改開始/結束時間。修改將刪除所有待執行任務並重新生成。"}
           </DialogDescription>
         </DialogHeader>
 
@@ -191,11 +187,47 @@ export function PlanEditDialog({
                 <span className="text-muted-foreground">日期：</span>
                 <span className="ml-2">{plan.start_day}</span>
               </div>
-              <div className="text-sm">
-                <span className="text-muted-foreground">開始時間：</span>
-                <span className="ml-2">{plan.start_time}</span>
-              </div>
+              {isPlanStarted && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">開始時間：</span>
+                  <span className="ml-2">{plan.start_time}</span>
+                </div>
+              )}
             </div>
+
+            {/* 開始時間選擇器（僅在計劃未開始時顯示） */}
+            {!isPlanStarted && (
+              <FormField
+                control={form.control}
+                name="start_time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>開始時間</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="選擇時間" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {TIME_SLOTS.map((time) => (
+                          <SelectItem key={time} value={time}>
+                            {time}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      修改開始時間將刪除所有待執行任務並重新生成
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {/* 結束時間選擇器 */}
             <FormField
@@ -225,38 +257,10 @@ export function PlanEditDialog({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    設定重複續訂的結束時間，或選擇「單次訂房」
+                    {isPlanStarted
+                      ? "修改結束時間將調整續訂任務"
+                      : "設定重複續訂的結束時間，或選擇「單次訂房」"}
                   </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* 狀態選擇器 */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>狀態</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="選擇狀態" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>手動變更計劃狀態</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
